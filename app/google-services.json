@@ -1,21 +1,19 @@
 {
   "project_info": {
-    "project_number": "253972937775",
-    "firebase_url": "https://sociallogins-8e230.firebaseio.com",
-    "project_id": "sociallogins-8e230",
-    "storage_bucket": "sociallogins-8e230.appspot.com"
+    "project_number": "28384497",
+    "project_id": "sociallogins-787f0"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:253972937775:android:ff1b0f17c2fabe63",
+        "mobilesdk_app_id": "1:28384497:android:ff1b0f17c2fabe63",
         "android_client_info": {
           "package_name": "login.demo.com.sociallogins"
         }
       },
       "oauth_client": [
         {
-          "client_id": "253972937775-c6dkfk81blp4k7ntcm60mg2me62n96kt.apps.googleusercontent.com",
+          "client_id": "28384497-32n53saigdmti29auj8vf0knh67vr7al.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "login.demo.com.sociallogins",
@@ -23,13 +21,13 @@
           }
         },
         {
-          "client_id": "253972937775-spmlh7i8p3o7q9t8oacqdjqsd75u5d14.apps.googleusercontent.com",
+          "client_id": "28384497-mumdirsu0fvicljfb4r7thp3a1anm426.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKk7znaCH2GENS37GuLtT2p2ElQFolYag"
+          "current_key": "AIzaSyAnKywSg3fY6aQlpRBK_5WtQkA3O5L2J2o"
         }
       ],
       "services": {
@@ -37,16 +35,11 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "253972937775-spmlh7i8p3o7q9t8oacqdjqsd75u5d14.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 2
+          "status": 1
         }
       }
     }

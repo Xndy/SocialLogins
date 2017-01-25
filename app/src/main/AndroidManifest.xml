@@ -19,7 +19,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <meta-data
@@ -39,13 +38,17 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4b3aef396b229db337528fc4a0a8e8237187675b" />
 
         <activity android:name="com.twitter.sdk.android.core.identity.OAuthActivity" />
-
+        <activity
+            android:name=".GmailActivity"
+            android:label="@string/title_activity_gmail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package login.demo.com.sociallogins;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,13 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -40,12 +48,13 @@ import login.demo.com.sociallogins.Util.DownloadImage;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public class SocialLoginActivity extends AppCompatActivity {
+public class SocialLoginActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener {
 
     /*
     Variables para el TWITTER LOGIN
      */
     private TwitterLoginButton twitterloginButton;
+    //API KEY PARA CONECTAR A LAS CLAVES DEL TWITTER
     private static String TWITTER_KEY= "3s1BSWf7n1Rms2gpu8Sz4aLCk";
     private static String TWITTER_SECRET = "Tm3U6CXZFY3twfgxFgOvLErw8mB4FQsIc7Tt1JlqOAJTHWt5D7";
     /*
@@ -57,6 +66,23 @@ public class SocialLoginActivity extends AppCompatActivity {
     private ProfileTracker profileTracker;
     private LoginButton loginButton;
 
+
+    /*
+    VARAIABLES DE GOOGLE
+     */
+    //BOTTON SING IN
+    private SignInButton signInButton;
+
+    //oPCIONES DE INICIO DE SESION
+    private GoogleSignInOptions gso;
+    private GoogleApiClient mGoogleApiClient;
+
+    //Signin constant to check the activity result
+    private int RC_SIGN_IN = 100;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +90,33 @@ public class SocialLoginActivity extends AppCompatActivity {
         SKFacebook();
 
         setContentView(R.layout.activity_social_login);
+
+        //Inicializa el menude opciones para la cuenta de gmAIL
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        //BOTN DE GMAIL
+        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_WIDE);
+        signInButton.setScopes(gso.getScopeArray());
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Creating an intent
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+
+                //Starting intent for result
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
 
         //boton de facebook
         loginButton = (LoginButton)findViewById(R.id.login_button);
@@ -217,43 +270,47 @@ public class SocialLoginActivity extends AppCompatActivity {
         if(callbackManager != null)
             callbackManager.onActivityResult(requestCode, responseCode, intent);
         twitterloginButton.onActivityResult(requestCode, responseCode, intent);
+
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
+            //Calling a new function to handle signin
+            handleSignInResult(result);
+        }
+
+
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        //If the login succeed
+        if (result.isSuccess()) {
+            //Getting google account
+            GoogleSignInAccount acct = result.getSignInAccount();
+/*
+            //Displaying name and email
+            textViewName.setText(acct.getDisplayName());
+            textViewEmail.setText(acct.getEmail());
+
+            //Initializing image loader
+            imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
+                    .getImageLoader();
+
+            imageLoader.get(acct.getPhotoUrl().toString(),
+                    ImageLoader.getImageListener(profilePhoto,
+                            R.mipmap.ic_launcher,
+                            R.mipmap.ic_launcher));
+
+            //Loading image
+            profilePhoto.setImageUrl(acct.getPhotoUrl().toString(), imageLoader);*/
+
+        } else {
+            //If login fails
+            Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show();
+        }
     }
 
 
-    public void getTwitterData(final TwitterSession session) {
-        MyTwitterApiClient tapiclient = new MyTwitterApiClient(session);
-        tapiclient.getCustomService().show(session.getUserId(),
-                new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-
-                        TwitterAuthToken authToken = session.getAuthToken();
-                        String token = authToken.token;
-                        String secret = authToken.secret;
-                        //name.setText(result.data.name);
-                        //location.setText(result.data.location);
-                       // new DownloadImage(profileImageView)
-                         //      .execute(result.data.profileImageUrl);
-
-                        Intent main = MainActivity.newIntent
-                                (SocialLoginActivity.this, result.data.name, result.data.location,
-                                        result.data.profileImageUrl);
-                        startActivity(main);
-
-
-
-//
-                       // Log.d("Name", name);
-                     //   Log.d("city", location);
-
-                    }
-
-                    public void failure(TwitterException exception) {
-                        // Do something on failure
-                        exception.printStackTrace();
-                    }
-                });
-
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
