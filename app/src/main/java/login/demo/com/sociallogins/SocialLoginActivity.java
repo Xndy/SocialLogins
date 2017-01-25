@@ -3,17 +3,14 @@ package login.demo.com.sociallogins;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -22,7 +19,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -37,14 +33,13 @@ import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 import com.twitter.sdk.android.core.models.User;
 
 import io.fabric.sdk.android.Fabric;
-import login.demo.com.sociallogins.Util.DownloadImage;
+import login.demo.com.sociallogins.Util.CustomVolleyRequest;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -79,7 +74,7 @@ public class SocialLoginActivity extends AppCompatActivity  implements GoogleApi
 
     //Signin constant to check the activity result
     private int RC_SIGN_IN = 100;
-
+    private ImageLoader imageLoader;
 
 
 
@@ -112,7 +107,6 @@ public class SocialLoginActivity extends AppCompatActivity  implements GoogleApi
             public void onClick(View v) {
                 //Creating an intent
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-
                 //Starting intent for result
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
@@ -285,22 +279,11 @@ public class SocialLoginActivity extends AppCompatActivity  implements GoogleApi
         if (result.isSuccess()) {
             //Getting google account
             GoogleSignInAccount acct = result.getSignInAccount();
-/*
-            //Displaying name and email
-            textViewName.setText(acct.getDisplayName());
-            textViewEmail.setText(acct.getEmail());
 
-            //Initializing image loader
-            imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
-                    .getImageLoader();
+            Intent main = GmailActivity.newIntent
+                    (SocialLoginActivity.this, acct.getDisplayName(),acct.getFamilyName(), acct.getPhotoUrl().toString());
+            startActivity(main);
 
-            imageLoader.get(acct.getPhotoUrl().toString(),
-                    ImageLoader.getImageListener(profilePhoto,
-                            R.mipmap.ic_launcher,
-                            R.mipmap.ic_launcher));
-
-            //Loading image
-            profilePhoto.setImageUrl(acct.getPhotoUrl().toString(), imageLoader);*/
 
         } else {
             //If login fails
