@@ -23,6 +23,7 @@ public class CustomVolleyRequest {
     private ImageLoader imageLoader;
 
 
+
     private CustomVolleyRequest(Context context) {
         CustomVolleyRequest.context = context;
         this.requestQueue = getRequestQueue();
